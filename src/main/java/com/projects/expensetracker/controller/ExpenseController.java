@@ -1,11 +1,12 @@
 package com.projects.expensetracker.controller;
 
+import com.projects.expensetracker.dto.ExpenseDto;
 import com.projects.expensetracker.exceptions.ExpenceNotFoundException;
 import com.projects.expensetracker.exceptions.UserNotFoundException;
-import com.projects.expensetracker.model.Expense;
 import com.projects.expensetracker.model.User;
 import com.projects.expensetracker.service.ExpenseService;
 import com.projects.expensetracker.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,29 +26,27 @@ public class ExpenseController {
 
 
     @GetMapping("/{user_id}")
-    public List<Expense> getExpensesByUser(@PathVariable Long user_id) throws UserNotFoundException {
+    public ResponseEntity<List<ExpenseDto>> getExpensesByUser(@PathVariable Long user_id) throws UserNotFoundException {
 
-        User user = userService.findUserById(user_id);
-        return expenseService.getExpensesByUser(user);
+        User user = userService.getUserByID(user_id);
+        return ResponseEntity.ok(expenseService.getExpensesByUser(user));
     }
 
     @PostMapping("/{user_id}")
-    public void addExpense(@PathVariable Long user_id, @RequestBody @Validated Expense expense) throws UserNotFoundException {
+    public ResponseEntity<Boolean> addExpense(@PathVariable Long user_id, @RequestBody @Validated ExpenseDto expense) throws UserNotFoundException {
 
-        User user = userService.findUserById(user_id);
-        expense.setUser(user);
-        expenseService.addExpense(expense);
+        return ResponseEntity.ok(expenseService.addExpense(expense, user_id));
     }
 
     @PutMapping("/{expense_id}")
-    public void updateExpense(@PathVariable Long expense_id, @RequestBody @Validated Expense expense) throws ExpenceNotFoundException {
+    public ResponseEntity<Boolean> updateExpense(@PathVariable Long expense_id, @RequestBody @Validated ExpenseDto expense) throws ExpenceNotFoundException {
 
-        expenseService.updateExpense(expense_id, expense);
+        return ResponseEntity.ok(expenseService.updateExpense(expense_id, expense));
     }
 
     @DeleteMapping("/{expense_id}")
-    public void deleteExpense(@PathVariable Long expense_id) throws ExpenceNotFoundException {
+    public ResponseEntity<Boolean> deleteExpense(@PathVariable Long expense_id) throws ExpenceNotFoundException {
 
-        expenseService.deleteExpense(expense_id);
+        return ResponseEntity.ok(expenseService.deleteExpense(expense_id));
     }
 }

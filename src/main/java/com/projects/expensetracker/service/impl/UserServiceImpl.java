@@ -1,29 +1,41 @@
 package com.projects.expensetracker.service.impl;
 
+import com.projects.expensetracker.dto.UserDto;
 import com.projects.expensetracker.exceptions.UserNotFoundException;
 import com.projects.expensetracker.model.User;
 import com.projects.expensetracker.repository.UserRepository;
 import com.projects.expensetracker.service.UserService;
+import com.projects.expensetracker.utils.ObjectMapper;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper) {
         this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
-    public List<User> findAllUsers() {
-        return userRepository.findAll();
+    public List<UserDto> findAllUsers() {
+        return ObjectMapper.mapAll(userRepository.findAll(), UserDto.class);
     }
 
     @Override
-    public User findUserById(Long id) throws UserNotFoundException {
+    public UserDto findUserById(Long id) throws UserNotFoundException {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        return modelMapper.map(user, UserDto.class);
+    }
+
+    @Override
+    public User getUserByID(Long id) throws UserNotFoundException {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
@@ -38,14 +50,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long userId) throws UserNotFoundException {
-        User existingUser = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
-        userRepository.deleteById(userId);
+    public Boolean deleteUser(Long userId) throws UserNotFoundException {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            userRepository.deleteById(userId);
+            return true;
+        } else {
+            throw new UserNotFoundException("User not found");
+        }
     }
 
     @Override
-    public void createUser(User user) {
-        User newUser = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword());
+    public void createUser(UserDto userDto) {
+
+        User newUser = modelMapper.map(userDto, User.class);
         userRepository.save(newUser);
     }
 

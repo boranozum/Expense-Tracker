@@ -1,5 +1,6 @@
 package com.projects.expensetracker.service;
 
+import com.projects.expensetracker.dto.ExpenseDto;
 import com.projects.expensetracker.exceptions.ExpenceNotFoundException;
 import com.projects.expensetracker.model.Expense;
 import com.projects.expensetracker.model.User;
@@ -10,13 +11,14 @@ import java.util.List;
 @Service
 public interface ExpenseService {
 
-    void addExpense(Expense expense);
+    Expense getExpenseByID(Long id) throws ExpenceNotFoundException;
+    Boolean addExpense(ExpenseDto expense, Long userId);
 
-    void updateExpense(Long expense_id, Expense expenseUpdated) throws ExpenceNotFoundException;
+    Boolean updateExpense(Long expense_id, ExpenseDto expenseUpdated) throws ExpenceNotFoundException;
 
-    void deleteExpense(Long expenseId) throws ExpenceNotFoundException;
+    Boolean deleteExpense(Long expenseId) throws ExpenceNotFoundException;
 
-    List<Expense> getExpensesByUser(User user);
+    List<ExpenseDto> getExpensesByUser(User user);
 
     Expense findExpenseById(Long expenseId) throws ExpenceNotFoundException;
 }
