@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Date;
+
 @Entity
 @Data
 public class Expense {
@@ -15,6 +17,9 @@ public class Expense {
     private String expenseType;
     private String description;
     private Double amount;
+
+    private Date dateCreated;
+    private Date dateUpdated;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,45 +38,5 @@ public class Expense {
 
     public Expense() {
 
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getExpenseType() {
-        return expenseType;
-    }
-
-    public void setExpenseType(String expenseType) {
-        this.expenseType = expenseType;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }

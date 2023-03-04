@@ -18,7 +18,7 @@ public interface ExpenseService {
 
     Boolean deleteExpense(Long expenseId) throws ExpenceNotFoundException;
 
-    List<ExpenseDto> getExpensesByUser(User user);
+    List<ExpenseDto> getExpensesByUser(User user, int page, int size, String sortOrder, String sortBy);
 
     Expense findExpenseById(Long expenseId) throws ExpenceNotFoundException;
 }

@@ -9,8 +9,12 @@ import com.projects.expensetracker.service.ExpenseService;
 import com.projects.expensetracker.exceptions.ExpenceNotFoundException;
 import com.projects.expensetracker.utils.ObjectMapper;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -31,6 +35,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public Boolean addExpense(ExpenseDto expenseDto, Long userId) {
         Expense expense = modelMapper.map(expenseDto, Expense.class);
+        expense.setDateCreated(new Date());
+        expense.setDateUpdated(new Date());
         User user = userRepository.findById(userId).get();
         expense.setUser(user);
         expenseRepository.save(expense);
@@ -43,6 +49,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         expense.setAmount(expenseUpdated.getAmount());
         expense.setDescription(expenseUpdated.getDescription());
         expense.setExpenseType(expenseUpdated.getExpenseType());
+        expense.setDateUpdated(new Date());
         expenseRepository.save(expense);
         return true;
     }
@@ -55,8 +62,10 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public List<ExpenseDto> getExpensesByUser(User user) {
-        return ObjectMapper.mapAll(expenseRepository.findAllByUser(user), ExpenseDto.class);
+    public List<ExpenseDto> getExpensesByUser(User user, int page, int size, String sortOrder, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, sortOrder.equalsIgnoreCase("asc") ? org.springframework.data.domain.Sort.by(sortBy).ascending() : org.springframework.data.domain.Sort.by(sortBy).descending());
+        Page<Expense> expenses = expenseRepository.findAllByUser(user, pageable);
+        return ObjectMapper.mapAll(expenses.getContent(), ExpenseDto.class);
     }
 
     @Override

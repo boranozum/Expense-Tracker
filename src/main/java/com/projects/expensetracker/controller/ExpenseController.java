@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -25,11 +26,13 @@ public class ExpenseController {
     }
 
 
+
+    // pagination
     @GetMapping("/{user_id}")
-    public ResponseEntity<List<ExpenseDto>> getExpensesByUser(@PathVariable Long user_id) throws UserNotFoundException {
+    public ResponseEntity<List<ExpenseDto>> getExpenses(@PathVariable Long user_id, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "asc") String sortOrder, @RequestParam(defaultValue = "dateCreated") String sortBy) throws UserNotFoundException {
 
         User user = userService.getUserByID(user_id);
-        return ResponseEntity.ok(expenseService.getExpensesByUser(user));
+        return ResponseEntity.ok(expenseService.getExpensesByUser(user, page, size, sortOrder, sortBy));
     }
 
     @PostMapping("/{user_id}")
