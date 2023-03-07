@@ -1,6 +1,7 @@
 package com.projects.expensetracker.service.impl;
 
 import com.projects.expensetracker.dto.ExpenseDto;
+import com.projects.expensetracker.enumaration.ExpenseCategory;
 import com.projects.expensetracker.model.Expense;
 import com.projects.expensetracker.model.User;
 import com.projects.expensetracker.repository.ExpenseRepository;
@@ -33,12 +34,13 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public Boolean addExpense(ExpenseDto expenseDto, Long userId) {
+    public Boolean addExpense(ExpenseDto expenseDto, Long userId) throws ExpenceNotFoundException {
         Expense expense = modelMapper.map(expenseDto, Expense.class);
         expense.setDateCreated(new Date());
         expense.setDateUpdated(new Date());
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId).orElseThrow(() -> new ExpenceNotFoundException("User not found"));
         expense.setUser(user);
+        expense.setCategory(ExpenseCategory.valueOf(expenseDto.getCategory()));
         expenseRepository.save(expense);
         user.setCurrentBudget(user.getCurrentBudget() - expense.getAmount());
         userRepository.save(user);
@@ -52,7 +54,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         user.setCurrentBudget(user.getCurrentBudget() + expense.getAmount());
         expense.setAmount(expenseUpdated.getAmount());
         expense.setDescription(expenseUpdated.getDescription());
-        expense.setExpenseType(expenseUpdated.getExpenseType());
+        expense.setCategory(ExpenseCategory.valueOf(expenseUpdated.getCategory()));
         expense.setDateUpdated(new Date());
         user.setCurrentBudget(user.getCurrentBudget() - expense.getAmount());
         expenseRepository.save(expense);

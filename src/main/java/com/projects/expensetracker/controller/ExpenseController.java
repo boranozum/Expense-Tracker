@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -34,7 +33,7 @@ public class ExpenseController {
     }
 
     @PostMapping("/{user_id}")
-    public ResponseEntity<Boolean> addExpense(@PathVariable Long user_id, @RequestBody @Validated ExpenseDto expense) throws UserNotFoundException {
+    public ResponseEntity<Boolean> addExpense(@PathVariable Long user_id, @RequestBody @Validated ExpenseDto expense) throws UserNotFoundException, ExpenceNotFoundException {
 
         return ResponseEntity.ok(expenseService.addExpense(expense, user_id));
     }

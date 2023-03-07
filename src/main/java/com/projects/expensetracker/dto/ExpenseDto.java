@@ -9,7 +9,7 @@ import java.util.Date;
 public class ExpenseDto {
 
     private String description;
-    private String expenseType;
+    private String category;
     private Double amount;
     private Date dateCreated;
     private Date dateUpdated;

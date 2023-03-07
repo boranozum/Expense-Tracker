@@ -12,7 +12,7 @@ import java.util.List;
 public interface ExpenseService {
 
     Expense getExpenseByID(Long id) throws ExpenceNotFoundException;
-    Boolean addExpense(ExpenseDto expense, Long userId);
+    Boolean addExpense(ExpenseDto expense, Long userId) throws ExpenceNotFoundException;
 
     Boolean updateExpense(Long expense_id, ExpenseDto expenseUpdated) throws ExpenceNotFoundException;
 

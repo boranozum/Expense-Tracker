@@ -1,6 +1,6 @@
 package com.projects.expensetracker.enumaration;
 
-public enum ExpenseType {
+public enum ExpenseCategory {
     FOOD,
     TRAVEL,
     ENTERTAINMENT,

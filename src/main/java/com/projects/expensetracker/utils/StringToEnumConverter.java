@@ -3,12 +3,12 @@ package com.projects.expensetracker.utils;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.databind.util.Converter;
-import com.projects.expensetracker.enumaration.ExpenseType;
+import com.projects.expensetracker.enumaration.ExpenseCategory;
 
-public class StringToEnumConverter implements Converter<String, ExpenseType> {
+public class StringToEnumConverter implements Converter<String, ExpenseCategory> {
     @Override
-    public ExpenseType convert(String source) {
-        return ExpenseType.valueOf(source.toUpperCase());
+    public ExpenseCategory convert(String source) {
+        return ExpenseCategory.valueOf(source.toUpperCase());
     }
 
     @Override

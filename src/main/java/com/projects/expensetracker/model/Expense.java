@@ -1,6 +1,7 @@
 package com.projects.expensetracker.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.projects.expensetracker.enumaration.ExpenseCategory;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,10 +15,10 @@ public class Expense {
     @GeneratedValue(generator = "expense_generator", strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    private String expenseType;
+    @Enumerated(EnumType.STRING)
+    private ExpenseCategory category;
     private String description;
     private Double amount;
-
     private Date dateCreated;
     private Date dateUpdated;
 
@@ -29,8 +30,8 @@ public class Expense {
     public Expense(Long id, Double amount, String description, String expenseType, User user) {
     }
 
-    public Expense(String expenseType, String description, Double amount, User user) {
-        this.expenseType = expenseType;
+    public Expense(ExpenseCategory category, String description, Double amount, User user) {
+        this.category = category;
         this.description = description;
         this.amount = amount;
         this.user = user;
