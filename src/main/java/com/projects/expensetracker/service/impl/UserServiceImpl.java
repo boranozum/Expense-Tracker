@@ -1,5 +1,6 @@
 package com.projects.expensetracker.service.impl;
 
+import com.projects.expensetracker.dto.RegisterRequest;
 import com.projects.expensetracker.dto.UserDto;
 import com.projects.expensetracker.exceptions.UserNotFoundException;
 import com.projects.expensetracker.model.User;
@@ -9,6 +10,7 @@ import com.projects.expensetracker.utils.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,6 +53,8 @@ public class UserServiceImpl implements UserService {
         existingUser.setLastName(user.getLastName());
         existingUser.setEmail(user.getEmail());
         existingUser.setPassword(user.getPassword());
+        existingUser.setCurrentBudget(user.getCurrentBudget());
+        existingUser.setMonthlyBudget(user.getMonthlyBudget());
         userRepository.save(existingUser);
     }
 
@@ -66,9 +70,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUser(UserDto userDto) {
+    public void createUser(RegisterRequest registerRequest) {
 
-        User newUser = modelMapper.map(userDto, User.class);
+        User newUser = new User();
+        newUser.setFirstName(registerRequest.getFirstName());
+        newUser.setLastName(registerRequest.getLastName());
+        newUser.setEmail(registerRequest.getEmail());
+        newUser.setPassword(registerRequest.getPassword());
+        newUser.setMonthlyBudget(registerRequest.getMonthlyBudget());
+        newUser.setCurrentBudget(registerRequest.getMonthlyBudget());
+        newUser.setExpenses(new ArrayList<>());
         userRepository.save(newUser);
     }
 

@@ -1,5 +1,6 @@
 package com.projects.expensetracker.service;
 
+import com.projects.expensetracker.dto.RegisterRequest;
 import com.projects.expensetracker.dto.UserDto;
 import com.projects.expensetracker.exceptions.UserNotFoundException;
 import com.projects.expensetracker.model.User;
@@ -23,5 +24,5 @@ public interface UserService {
 
     Boolean deleteUser(Long userId) throws UserNotFoundException;
 
-    void createUser(UserDto user);
+    void createUser(RegisterRequest registerRequest);
 }
