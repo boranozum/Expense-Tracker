@@ -31,12 +31,6 @@ public class UserController {
         return ResponseEntity.ok(userService.findUserById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody @Validated UserDto user) {
-        userService.createUser(user);
-        return ResponseEntity.ok(user);
-    }
-
     @PutMapping("/{userId}")
     public ResponseEntity<UserDto> updateUser(@PathVariable("userId") Long userId, @RequestBody @Validated User user) throws UserNotFoundException {
         userService.updateUser(userId, user);

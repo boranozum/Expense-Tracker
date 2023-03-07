@@ -25,8 +25,6 @@ public class ExpenseController {
         this.userService = userService;
     }
 
-
-
     // pagination
     @GetMapping("/{user_id}")
     public ResponseEntity<List<ExpenseDto>> getExpenses(@PathVariable Long user_id, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "asc") String sortOrder, @RequestParam(defaultValue = "dateCreated") String sortBy) throws UserNotFoundException {

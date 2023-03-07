@@ -40,17 +40,23 @@ public class ExpenseServiceImpl implements ExpenseService {
         User user = userRepository.findById(userId).get();
         expense.setUser(user);
         expenseRepository.save(expense);
+        user.setCurrentBudget(user.getCurrentBudget() - expense.getAmount());
+        userRepository.save(user);
         return true;
     }
 
     @Override
     public Boolean updateExpense(Long expense_id, ExpenseDto expenseUpdated) throws ExpenceNotFoundException {
         Expense expense = expenseRepository.findById(expense_id).orElseThrow(() -> new ExpenceNotFoundException("Expense not found"));
+        User user = userRepository.findById(expense.getUser().getId()).orElseThrow(() -> new ExpenceNotFoundException("User not found"));
+        user.setCurrentBudget(user.getCurrentBudget() + expense.getAmount());
         expense.setAmount(expenseUpdated.getAmount());
         expense.setDescription(expenseUpdated.getDescription());
         expense.setExpenseType(expenseUpdated.getExpenseType());
         expense.setDateUpdated(new Date());
+        user.setCurrentBudget(user.getCurrentBudget() - expense.getAmount());
         expenseRepository.save(expense);
+
         return true;
     }
 
