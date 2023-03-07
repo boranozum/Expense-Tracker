@@ -1,12 +1,14 @@
 package com.projects.expensetracker.controller;
 
 import com.projects.expensetracker.dto.LoginRequest;
+import com.projects.expensetracker.dto.LoginResponse;
 import com.projects.expensetracker.dto.RegisterRequest;
 import com.projects.expensetracker.dto.UserDto;
 import com.projects.expensetracker.exceptions.UserNotFoundException;
 import com.projects.expensetracker.model.User;
 import com.projects.expensetracker.security.JwtTokenProvider;
 import com.projects.expensetracker.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,30 +40,27 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<String> register(@RequestBody @Valid RegisterRequest registerRequest) {
 
         try {
             User user = userService.getUserByEmail(registerRequest.getEmail());
             return ResponseEntity.badRequest().body("User already exists");
         } catch (UserNotFoundException e) {
-            UserDto userDto = new UserDto();
-            userDto.setEmail(registerRequest.getEmail());
-            userDto.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-            userDto.setFirstName(registerRequest.getFirstName());
-            userDto.setLastName(registerRequest.getLastName());
-            userService.createUser(userDto);
+
+            registerRequest.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+            userService.createUser(registerRequest);
             return ResponseEntity.ok("User registered successfully");
         }
     }
 
     @PostMapping ("/login")
-    public String login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) throws UserNotFoundException {
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
 
         SecurityContextHolder.getContext().setAuthentication(authenticate);
 
-        return "Bearer " + jwtTokenProvider.generateToken(authenticate);
+        return ResponseEntity.ok(new LoginResponse(jwtTokenProvider.generateToken(authenticate), userService.getUserByEmail(loginRequest.getEmail()).getId()));
     }
 }
